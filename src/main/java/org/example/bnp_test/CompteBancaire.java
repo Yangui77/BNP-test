@@ -9,6 +9,7 @@ public class CompteBancaire {
     private BigDecimal solde;
 
     public CompteBancaire(BigInteger numeroDeCompte, BigDecimal solde) {
+
         this.numeroDeCompte = numeroDeCompte;
         this.solde = solde;
     }
