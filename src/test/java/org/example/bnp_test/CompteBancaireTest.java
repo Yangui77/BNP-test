@@ -18,28 +18,32 @@ public class CompteBancaireTest {
             "1, 2",
             "213213213, 0",
             "213213213, -10",
-            "213213213, -10,10"
+            "213213213, -10.10"
     }
 
     )
-    void shouldCreateBankAccountWithCorrectValues(int numeroDeCompte, int solde) {
+    void shouldCreateBankAccountWithCorrectValues(int numeroDeCompte, BigDecimal solde) {
         CompteBancaire compteBancaire = new CompteBancaire(
                 BigInteger.valueOf(numeroDeCompte),
-                BigDecimal.valueOf(solde));
+                solde);
         assertEquals(BigInteger.valueOf(numeroDeCompte), compteBancaire.getNumeroDeCompte());
-        assertEquals(BigDecimal.valueOf(solde), compteBancaire.getSolde());
+        assertEquals(solde, compteBancaire.getSolde());
     }
 
     @ParameterizedTest
     @CsvSource({
-            "213213213, -10,101"
+            "213213213, -10.101",
+            "213213213, -10.1011112",
+            "213213213, -10.10212",
+            "213213213, -10.101111",
+
     }
 
     )
-    void shouldNotCreateBankAccountForIncorrectValues(int numeroDeCompte, int solde) {
+    void shouldNotCreateBankAccountForIncorrectValues(int numeroDeCompte, BigDecimal solde) {
         assertThrows(IllegalArgumentException.class, () ->
                 new CompteBancaire(
                         BigInteger.valueOf(numeroDeCompte),
-                        BigDecimal.valueOf(solde)));
+                        solde));
     }
 }
