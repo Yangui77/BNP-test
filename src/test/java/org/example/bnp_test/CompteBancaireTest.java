@@ -1,5 +1,7 @@
 package org.example.bnp_test;
 
+import org.example.bnp_test.exception.MontantDecimalInvalideException;
+import org.example.bnp_test.exception.MontantNegatifException;
 import org.example.bnp_test.exception.SoldeInsuffisantException;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -7,8 +9,6 @@ import org.junit.jupiter.params.provider.CsvSource;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-import static org.example.bnp_test.CompteBancaire.DecimalErrorMessage;
-import static org.example.bnp_test.CompteBancaire.NegativeAmountErrorMessage;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -51,11 +51,10 @@ public class CompteBancaireTest {
 
     )
     void shouldNotCreateBankAccountForIncorrectValues(int numeroDeCompte, BigDecimal solde) {
-        Exception exception = assertThrows(IllegalArgumentException.class, () ->
+        assertThrows(MontantDecimalInvalideException.class, () ->
                 new CompteBancaire(
                         BigInteger.valueOf(numeroDeCompte),
                         solde));
-        assertEquals(DecimalErrorMessage, exception.getMessage());
     }
 
     @ParameterizedTest
@@ -88,12 +87,11 @@ public class CompteBancaireTest {
     @CsvSource({
             "10.1212",
             "-10.1231213"})
-    void shouldThrowIllegalAgumentExceptionIfAmountHasMoreThanTwoDecimals(BigDecimal amount) {
+    void shouldThrowMontantDecimalInvalideExceptionIfAmountHasMoreThanTwoDecimals(BigDecimal amount) {
         CompteBancaire compteBancaire = new CompteBancaire(
                 defaultAccountNumber, defaultBalance);
-        IllegalArgumentException exception = assertThrows(
-                IllegalArgumentException.class, () -> compteBancaire.depot(amount));
-        assertEquals(DecimalErrorMessage, exception.getMessage());
+        assertThrows(
+                MontantDecimalInvalideException.class, () -> compteBancaire.depot(amount));
         assertEquals(compteBancaire.getSolde(), defaultBalance);
     }
 
@@ -102,12 +100,11 @@ public class CompteBancaireTest {
             "-10.12",
             "-20.14",
             "-40"})
-    void shouldThrowIllegalAgumentExceptionIfAmountIsNegative(BigDecimal amount) {
+    void shouldThrowNegativeAmountErrorMessageIfAmountIsNegative(BigDecimal amount) {
         CompteBancaire compteBancaire = new CompteBancaire(
                 defaultAccountNumber, defaultBalance);
-        IllegalArgumentException exception = assertThrows(
-                IllegalArgumentException.class, () -> compteBancaire.depot(amount));
-        assertEquals(NegativeAmountErrorMessage, exception.getMessage());
+        assertThrows(
+                MontantNegatifException.class, () -> compteBancaire.depot(amount));
         assertEquals(defaultBalance, compteBancaire.getSolde());
     }
 
@@ -127,13 +124,10 @@ public class CompteBancaireTest {
     @CsvSource({
             "-100",
             "-200"})
-    void shouldThrowIllegalArugmentExceptionWithNegativeAmount(BigDecimal amount) {
+    void shouldThrowMontantNegatifExceptionWithNegativeAmount(BigDecimal amount) {
         CompteBancaire compteBancaire = new CompteBancaire(
                 defaultAccountNumber, defaultBalance);
-        IllegalArgumentException illegalArgumentException = assertThrows(IllegalArgumentException.class, () -> {
-            compteBancaire.retrait(amount);
-        });
-        assertEquals(illegalArgumentException.getMessage(), NegativeAmountErrorMessage);
+        assertThrows(MontantNegatifException.class, () -> compteBancaire.retrait(amount));
         assertEquals(defaultBalance, compteBancaire.getSolde());
     }
 
@@ -141,12 +135,11 @@ public class CompteBancaireTest {
     @CsvSource({
             "10.1212",
             "-10.1231213"})
-    void shouldThrowIllegalAgumentExceptionIfAmountHasMoreThanTwoDecimalsForWithdrawal(BigDecimal amount) {
+    void shouldThrowMontantDecimalInvalideExceptionIfAmountHasMoreThanTwoDecimalsForWithdrawal(BigDecimal amount) {
         CompteBancaire compteBancaire = new CompteBancaire(
                 defaultAccountNumber, defaultBalance);
-        IllegalArgumentException exception = assertThrows(
-                IllegalArgumentException.class, () -> compteBancaire.retrait(amount));
-        assertEquals(DecimalErrorMessage, exception.getMessage());
+        assertThrows(
+                MontantDecimalInvalideException.class, () -> compteBancaire.retrait(amount));
         assertEquals(compteBancaire.getSolde(), defaultBalance);
     }
 
@@ -183,15 +176,14 @@ public class CompteBancaireTest {
     @CsvSource({
             "-100",
             "-200"})
-    void shouldThrowIllegalArugmentExceptionWithNegativeAmountForTransfer(BigDecimal amount) {
+    void shouldThrowMontantNegatifExceptionWithNegativeAmountForTransfer(BigDecimal amount) {
         CompteBancaire compteBancaire = new CompteBancaire(
                 defaultAccountNumber, defaultBalance);
         CompteBancaire compteBancaireDestination = new CompteBancaire(
                 transferPayeeAccountNumber, defaultBalance);
-        IllegalArgumentException illegalArgumentException = assertThrows(IllegalArgumentException.class, () -> {
+        assertThrows(MontantNegatifException.class, () -> {
             compteBancaire.transferer(compteBancaireDestination, amount);
         });
-        assertEquals(illegalArgumentException.getMessage(), NegativeAmountErrorMessage);
         assertEquals(defaultBalance, compteBancaire.getSolde());
         assertEquals(defaultBalance, compteBancaireDestination.getSolde());
     }
@@ -200,14 +192,13 @@ public class CompteBancaireTest {
     @CsvSource({
             "10.1212",
             "-10.1231213"})
-    void shouldThrowIllegalAgumentExceptionIfAmountHasMoreThanTwoDecimalsForWithdrawalForTransfer(BigDecimal amount) {
+    void shouldThrowMontantDecimalInvalideExceptionIfAmountHasMoreThanTwoDecimalsForWithdrawalForTransfer(BigDecimal amount) {
         CompteBancaire compteBancaire = new CompteBancaire(
                 defaultAccountNumber, defaultBalance);
         CompteBancaire compteBancaireDestination = new CompteBancaire(
                 transferPayeeAccountNumber, defaultBalance);
-        IllegalArgumentException exception = assertThrows(
-                IllegalArgumentException.class, () -> compteBancaire.transferer(compteBancaireDestination, amount));
-        assertEquals(DecimalErrorMessage, exception.getMessage());
+        assertThrows(
+                MontantDecimalInvalideException.class, () -> compteBancaire.transferer(compteBancaireDestination, amount));
         assertEquals(compteBancaire.getSolde(), defaultBalance);
         assertEquals(compteBancaireDestination.getSolde(), defaultBalance);
     }
