@@ -43,6 +43,10 @@ public class CompteBancaire {
         solde = solde.add(montant);
     }
 
+    public void retrait(BigDecimal montant) {
+        solde = ;
+    }
+
 
     /**
      * Vérifie que le montant spéficié est positif
