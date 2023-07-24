@@ -18,31 +18,33 @@ public class CompteBancaire {
     }
 
     /**
-     * Vérifie si la valeur a un format correcte
-     * throws IllegalArgumentException
-     */
-    private void checkValeurDecimal(BigDecimal solde) {
-        if (getNumberOfDecimalPlaces(solde) > 2) {
-            throw new IllegalArgumentException(
-                    DecimalErrorMessage
-            );
-        }
-    }
-
+     * Permet de voir la valeur du solde
+    */
     public BigDecimal getSolde() {
         return solde;
     }
 
+    /**
+     * Permet de voir le numéro de compte
+     */
     protected BigInteger getNumeroDeCompte() {
         return numeroDeCompte;
     }
 
+    /**
+     * Permet de déposer un montant vers le solde.
+     * @param montant le montant à déposer
+     */
     public void depot(BigDecimal montant) {
         checkValeurDecimal(montant);
         checkMontantPositif(montant);
         solde = solde.add(montant);
     }
 
+    /**
+     * Permet de retirer un montant du solde.
+     * @param montant le montant à retirer
+     */
     public void retrait(BigDecimal montant) {
         checkValeurDecimal(montant);
         checkMontantPositif(montant);
@@ -61,6 +63,17 @@ public class CompteBancaire {
         }
     }
 
+    /**
+     * Vérifie si la valeur a un format correcte
+     * throws IllegalArgumentException
+     */
+    private void checkValeurDecimal(BigDecimal solde) throws IllegalArgumentException {
+        if (getNumberOfDecimalPlaces(solde) > 2) {
+            throw new IllegalArgumentException(
+                    DecimalErrorMessage
+            );
+        }
+    }
 
     /**
      * Prend un chiffre en bigdecimal en paramètre et retourne le nombre de chiffre après la virgule.
@@ -72,4 +85,5 @@ public class CompteBancaire {
         int index = string.indexOf(".");
         return index < 0 ? 0 : string.length() - index - 1;
     }
+
 }
