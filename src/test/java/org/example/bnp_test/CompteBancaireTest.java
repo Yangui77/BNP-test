@@ -1,6 +1,5 @@
 package org.example.bnp_test;
 
-import org.example.bnp_test.CompteBancaire;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
@@ -13,6 +12,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class CompteBancaireTest {
 
+    private final BigInteger defaultAccountNumber = BigInteger.valueOf(213213213);
+    private final BigDecimal defaultBalance = BigDecimal.valueOf(100);
 
     @ParameterizedTest
     @CsvSource({
@@ -52,4 +53,16 @@ public class CompteBancaireTest {
                         solde));
         assertEquals(DecimalErrorMessage, exception.getMessage());
     }
+
+    @ParameterizedTest
+    @CsvSource({"10, 110"})
+    void shouldAddDeposit(BigDecimal amount, BigDecimal expected) {
+        CompteBancaire compteBancaire = new CompteBancaire(
+                defaultAccountNumber,
+                defaultBalance);
+        compteBancaire.depot(amount);
+        assertEquals(expected, compteBancaire.getSolde());
+    }
+
+
 }

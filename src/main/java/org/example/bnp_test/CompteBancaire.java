@@ -1,5 +1,7 @@
 package org.example.bnp_test;
 
+import jdk.jshell.EvalException;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
@@ -34,6 +36,10 @@ public class CompteBancaire {
 
     protected BigInteger getNumeroDeCompte() {
         return numeroDeCompte;
+    }
+
+    public void depot(BigDecimal montant) {
+        solde = BigDecimal.valueOf(110);
     }
 
 
