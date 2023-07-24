@@ -7,6 +7,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 
 import static org.example.bnp_test.CompteBancaire.DecimalErrorMessage;
+import static org.example.bnp_test.CompteBancaire.NegativeAmountErrorMessage;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -90,5 +91,18 @@ public class CompteBancaireTest {
         IllegalArgumentException exception = assertThrows(
                 IllegalArgumentException.class, () -> compteBancaire.depot(amount));
         assertEquals(DecimalErrorMessage, exception.getMessage());
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+            "-10.12",
+    "-20.14",
+    "-40"})
+    void shouldThrowIllegalAgumentExceptionIfAmountIsNegative(BigDecimal amount) {
+        CompteBancaire compteBancaire = new CompteBancaire(
+                defaultAccountNumber, defaultBalance);
+        IllegalArgumentException exception = assertThrows(
+                IllegalArgumentException.class, () -> compteBancaire.depot(amount));
+        assertEquals(NegativeAmountErrorMessage, exception.getMessage());
     }
 }

@@ -9,6 +9,7 @@ public class CompteBancaire {
     private BigDecimal solde;
 
     public static final String DecimalErrorMessage = "Le solde ne peut pas avoir plus de deux chiffres après la virgule";
+    public static final String NegativeAmountErrorMessage = "Le montant spécifié ne peut pas être négatif";
 
     public CompteBancaire(BigInteger numeroDeCompte, BigDecimal solde) {
         checkValeurDecimal(solde);
@@ -38,7 +39,20 @@ public class CompteBancaire {
 
     public void depot(BigDecimal montant) {
         checkValeurDecimal(montant);
+        checkMontantPositif(montant);
         solde = solde.add(montant);
+    }
+
+
+    /**
+     * Vérifie que le montant spéficié est positif
+     * @param montant le montant à tester
+     * throws IllegalArgumentException
+     */
+    private void checkMontantPositif(BigDecimal montant) throws IllegalArgumentException {
+        if (montant.compareTo(BigDecimal.ZERO) < 0) {
+            throw new IllegalArgumentException(NegativeAmountErrorMessage);
+        }
     }
 
 
