@@ -41,6 +41,10 @@ public class CompteBancaire {
         solde = solde.add(montant);
     }
 
+    public void retrait(BigDecimal retrait) {
+        solde = BigDecimal.valueOf(0);
+    }
+
 
     /**
      * Prend un chiffre en bigdecimal en paramètre et retourne le nombre de chiffre après la virgule.
