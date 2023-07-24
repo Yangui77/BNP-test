@@ -55,8 +55,11 @@ public class CompteBancaireTest {
     }
 
     @ParameterizedTest
-    @CsvSource({"10, 110"})
-    void shouldAddDeposit(BigDecimal amount, BigDecimal expected) {
+    @CsvSource({
+            "10, 110",
+            "20, 120",
+            "20.10, 120.10"})
+    void shouldAddBalance(BigDecimal amount, BigDecimal expected) {
         CompteBancaire compteBancaire = new CompteBancaire(
                 defaultAccountNumber,
                 defaultBalance);
@@ -64,5 +67,27 @@ public class CompteBancaireTest {
         assertEquals(expected, compteBancaire.getSolde());
     }
 
+    @ParameterizedTest
+    @CsvSource({
+            "10, -90",
+            "20, -80",
+            "20.10, -79.90"})
+    void shouldAddBalanceFromNegativeBalance(BigDecimal amount, BigDecimal expected) {
+        CompteBancaire compteBancaire = new CompteBancaire(
+                defaultAccountNumber,
+                defaultBalance.negate());
+        compteBancaire.depot(amount);
+        assertEquals(expected, compteBancaire.getSolde());
+    }
 
+    @ParameterizedTest
+    @CsvSource({
+            "10.1212"})
+    void shouldThrowIllegalAgumentExceptionIfAmountHasMoreThanTwoDecimals(BigDecimal amount) {
+        CompteBancaire compteBancaire = new CompteBancaire(
+                defaultAccountNumber, defaultBalance);
+        IllegalArgumentException exception = assertThrows(
+                IllegalArgumentException.class, () -> compteBancaire.depot(amount));
+        assertEquals(DecimalErrorMessage, exception.getMessage());
+    }
 }

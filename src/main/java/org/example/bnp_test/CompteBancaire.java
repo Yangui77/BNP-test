@@ -39,7 +39,8 @@ public class CompteBancaire {
     }
 
     public void depot(BigDecimal montant) {
-        solde = BigDecimal.valueOf(110);
+        checkSolde(montant);
+        solde = solde.add(montant);
     }
 
 
