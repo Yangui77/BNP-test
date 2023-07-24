@@ -82,7 +82,8 @@ public class CompteBancaireTest {
 
     @ParameterizedTest
     @CsvSource({
-            "10.1212"})
+            "10.1212",
+            "-10.1231213"})
     void shouldThrowIllegalAgumentExceptionIfAmountHasMoreThanTwoDecimals(BigDecimal amount) {
         CompteBancaire compteBancaire = new CompteBancaire(
                 defaultAccountNumber, defaultBalance);

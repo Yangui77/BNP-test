@@ -1,7 +1,5 @@
 package org.example.bnp_test;
 
-import jdk.jshell.EvalException;
-
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
@@ -13,16 +11,16 @@ public class CompteBancaire {
     public static final String DecimalErrorMessage = "Le solde ne peut pas avoir plus de deux chiffres après la virgule";
 
     public CompteBancaire(BigInteger numeroDeCompte, BigDecimal solde) {
-        checkSolde(solde);
+        checkValeurDecimal(solde);
         this.numeroDeCompte = numeroDeCompte;
         this.solde = solde;
     }
 
     /**
-     * Vérifie si le solde a un format correcte
+     * Vérifie si la valeur a un format correcte
      * throws IllegalArgumentException
      */
-    private void checkSolde(BigDecimal solde) {
+    private void checkValeurDecimal(BigDecimal solde) {
         if (getNumberOfDecimalPlaces(solde) > 2) {
             throw new IllegalArgumentException(
                     DecimalErrorMessage
@@ -39,7 +37,7 @@ public class CompteBancaire {
     }
 
     public void depot(BigDecimal montant) {
-        checkSolde(montant);
+        checkValeurDecimal(montant);
         solde = solde.add(montant);
     }
 
