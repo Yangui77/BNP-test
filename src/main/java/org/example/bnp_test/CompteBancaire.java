@@ -8,6 +8,8 @@ public class CompteBancaire {
     private final BigInteger numeroDeCompte;
     private BigDecimal solde;
 
+    public static final String DecimalErrorMessage = "Le solde ne peut pas avoir plus de deux chiffres après la virgule";
+
     public CompteBancaire(BigInteger numeroDeCompte, BigDecimal solde) {
         checkSolde(solde);
         this.numeroDeCompte = numeroDeCompte;
@@ -21,7 +23,7 @@ public class CompteBancaire {
     private void checkSolde(BigDecimal solde) {
         if (getNumberOfDecimalPlaces(solde) > 2) {
             throw new IllegalArgumentException(
-                    "Le solde ne peut pas avoir plus de deux chiffres après la virgule"
+                    DecimalErrorMessage
             );
         }
     }
