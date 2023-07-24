@@ -1,5 +1,6 @@
 package org.example.bnp_test;
 
+import org.example.bnp_test.exception.SoldeInsuffisantException;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
@@ -111,8 +112,9 @@ public class CompteBancaireTest {
     @ParameterizedTest
     @CsvSource({
             "100, 0",
-            "20, 80"})
-    void shouldWithdraw(BigDecimal amount, BigDecimal expected) {
+            "20, 80",
+            "20.10, 79.90"})
+    void shouldWithdraw(BigDecimal amount, BigDecimal expected) throws SoldeInsuffisantException {
         CompteBancaire compteBancaire = new CompteBancaire(
                 defaultAccountNumber, defaultBalance);
         compteBancaire.retrait(amount);
@@ -133,4 +135,29 @@ public class CompteBancaireTest {
         assertEquals(defaultBalance, compteBancaire.getSolde());
     }
 
+    @ParameterizedTest
+    @CsvSource({
+            "10.1212",
+            "-10.1231213"})
+    void shouldThrowIllegalAgumentExceptionIfAmountHasMoreThanTwoDecimalsForWithdrawal(BigDecimal amount) {
+        CompteBancaire compteBancaire = new CompteBancaire(
+                defaultAccountNumber, defaultBalance);
+        IllegalArgumentException exception = assertThrows(
+                IllegalArgumentException.class, () -> compteBancaire.retrait(amount));
+        assertEquals(DecimalErrorMessage, exception.getMessage());
+        assertEquals(compteBancaire.getSolde(), defaultBalance);
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+            "110",
+            "120"})
+    void shouldThrowSoldeInsuffisantExceptionIfAmountIsHigherThantBalance(BigDecimal amount) {
+        CompteBancaire compteBancaire = new CompteBancaire(
+                defaultAccountNumber, defaultBalance);
+        assertThrows(SoldeInsuffisantException.class, () -> {
+            compteBancaire.retrait(amount);
+        });
+        assertEquals(defaultBalance, compteBancaire.getSolde());
+    }
 }

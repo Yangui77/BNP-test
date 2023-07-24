@@ -1,5 +1,7 @@
 package org.example.bnp_test;
 
+import org.example.bnp_test.exception.SoldeInsuffisantException;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
@@ -19,7 +21,7 @@ public class CompteBancaire {
 
     /**
      * Permet de voir la valeur du solde
-    */
+     */
     public BigDecimal getSolde() {
         return solde;
     }
@@ -33,6 +35,7 @@ public class CompteBancaire {
 
     /**
      * Permet de déposer un montant vers le solde.
+     *
      * @param montant le montant à déposer
      */
     public void depot(BigDecimal montant) {
@@ -43,19 +46,22 @@ public class CompteBancaire {
 
     /**
      * Permet de retirer un montant du solde.
+     *
      * @param montant le montant à retirer
      */
-    public void retrait(BigDecimal montant) {
+    public void retrait(BigDecimal montant) throws SoldeInsuffisantException {
         checkValeurDecimal(montant);
         checkMontantPositif(montant);
+        checkBalanceSuffisant(montant);
         solde = solde.subtract(montant);
     }
 
 
     /**
      * Vérifie que le montant spéficié est positif
+     *
      * @param montant le montant à tester
-     * throws IllegalArgumentException
+     *                throws IllegalArgumentException
      */
     private void checkMontantPositif(BigDecimal montant) throws IllegalArgumentException {
         if (montant.compareTo(BigDecimal.ZERO) < 0) {
@@ -77,6 +83,7 @@ public class CompteBancaire {
 
     /**
      * Prend un chiffre en bigdecimal en paramètre et retourne le nombre de chiffre après la virgule.
+     *
      * @param bigDecimal bigdecimal number.
      * @return nom de chiffre après la virgule.
      */
@@ -86,4 +93,17 @@ public class CompteBancaire {
         return index < 0 ? 0 : string.length() - index - 1;
     }
 
+
+    /**
+     * Vérification du solde présent par rapport au montant demandé pour un retrait ou un transfert.
+     * Renvoie une expception si le solde est insuffisant
+     *
+     * @param montant montant demandé
+     *                throws SoldeInsuffisantException
+     */
+    private void checkBalanceSuffisant(BigDecimal montant) throws SoldeInsuffisantException {
+        if (solde.compareTo(montant) < 0) {
+            throw new SoldeInsuffisantException();
+        }
+    }
 }
