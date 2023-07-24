@@ -5,7 +5,7 @@ import java.math.BigInteger;
 
 public class CompteBancaire {
 
-    private BigInteger numeroDeCompte;
+    private final BigInteger numeroDeCompte;
     private BigDecimal solde;
 
     public CompteBancaire(BigInteger numeroDeCompte, BigDecimal solde) {
@@ -19,7 +19,6 @@ public class CompteBancaire {
      * throws IllegalArgumentException
      */
     private void checkSolde(BigDecimal solde) {
-        System.out.println(solde);
         if (getNumberOfDecimalPlaces(solde) > 2) {
             throw new IllegalArgumentException(
                     "Le solde ne peut pas avoir plus de deux chiffres après la virgule"
@@ -27,7 +26,7 @@ public class CompteBancaire {
         }
     }
 
-    protected BigDecimal getSolde() {
+    public BigDecimal getSolde() {
         return solde;
     }
 
@@ -35,7 +34,13 @@ public class CompteBancaire {
         return numeroDeCompte;
     }
 
-    int getNumberOfDecimalPlaces(BigDecimal bigDecimal) {
+
+    /**
+     * Prend un chiffre en bigdecimal en paramètre et retourne le nombre de chiffre après la virgule.
+     * @param bigDecimal bigdecimal number.
+     * @return nom de chiffre après la virgule.
+     */
+    private int getNumberOfDecimalPlaces(BigDecimal bigDecimal) {
         String string = bigDecimal.stripTrailingZeros().toPlainString();
         int index = string.indexOf(".");
         return index < 0 ? 0 : string.length() - index - 1;
