@@ -58,6 +58,16 @@ public class CompteBancaire {
 
 
     /**
+     * Permet de transférer un montant d'un compte vers un autre.
+     * @throws SoldeInsuffisantException si le solde n'est pas suffisant pour le transfert.
+     */
+    public void transferer(CompteBancaire destination, BigDecimal montant) throws SoldeInsuffisantException {
+        retrait(montant);
+        destination.depot(montant);
+    }
+
+
+    /**
      * Vérifie que le montant spéficié est positif
      *
      * @param montant le montant à tester
@@ -97,9 +107,8 @@ public class CompteBancaire {
     /**
      * Vérification du solde présent par rapport au montant demandé pour un retrait ou un transfert.
      * Renvoie une expception si le solde est insuffisant
-     *
      * @param montant montant demandé
-     *                throws SoldeInsuffisantException
+     * throws SoldeInsuffisantException
      */
     private void checkBalanceSuffisant(BigDecimal montant) throws SoldeInsuffisantException {
         if (solde.compareTo(montant) < 0) {

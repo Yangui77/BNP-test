@@ -17,6 +17,8 @@ public class CompteBancaireTest {
     private final BigInteger defaultAccountNumber = BigInteger.valueOf(213213213);
     private final BigDecimal defaultBalance = BigDecimal.valueOf(100);
 
+    private final BigInteger transferPayeeAccountNumber = BigInteger.valueOf(111111111);
+
     @ParameterizedTest
     @CsvSource({
             "1, 2",
@@ -159,5 +161,70 @@ public class CompteBancaireTest {
             compteBancaire.retrait(amount);
         });
         assertEquals(defaultBalance, compteBancaire.getSolde());
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+            "50, 50, 150",
+            "30, 70, 130"})
+    void shouldTransferBalance(BigDecimal amount, BigDecimal expectedSolde1, BigDecimal expectedSolde2) throws SoldeInsuffisantException {
+        CompteBancaire compteBancaire = new CompteBancaire(
+                defaultAccountNumber, defaultBalance);
+        CompteBancaire compteBancaireDestination = new CompteBancaire(
+                transferPayeeAccountNumber, defaultBalance);
+        compteBancaire.transferer(
+                compteBancaireDestination, amount
+        );
+        assertEquals(expectedSolde1, compteBancaire.getSolde());
+        assertEquals(expectedSolde2, compteBancaireDestination.getSolde());
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+            "-100",
+            "-200"})
+    void shouldThrowIllegalArugmentExceptionWithNegativeAmountForTransfer(BigDecimal amount) {
+        CompteBancaire compteBancaire = new CompteBancaire(
+                defaultAccountNumber, defaultBalance);
+        CompteBancaire compteBancaireDestination = new CompteBancaire(
+                transferPayeeAccountNumber, defaultBalance);
+        IllegalArgumentException illegalArgumentException = assertThrows(IllegalArgumentException.class, () -> {
+            compteBancaire.transferer(compteBancaireDestination, amount);
+        });
+        assertEquals(illegalArgumentException.getMessage(), NegativeAmountErrorMessage);
+        assertEquals(defaultBalance, compteBancaire.getSolde());
+        assertEquals(defaultBalance, compteBancaireDestination.getSolde());
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+            "10.1212",
+            "-10.1231213"})
+    void shouldThrowIllegalAgumentExceptionIfAmountHasMoreThanTwoDecimalsForWithdrawalForTransfer(BigDecimal amount) {
+        CompteBancaire compteBancaire = new CompteBancaire(
+                defaultAccountNumber, defaultBalance);
+        CompteBancaire compteBancaireDestination = new CompteBancaire(
+                transferPayeeAccountNumber, defaultBalance);
+        IllegalArgumentException exception = assertThrows(
+                IllegalArgumentException.class, () -> compteBancaire.transferer(compteBancaireDestination, amount));
+        assertEquals(DecimalErrorMessage, exception.getMessage());
+        assertEquals(compteBancaire.getSolde(), defaultBalance);
+        assertEquals(compteBancaireDestination.getSolde(), defaultBalance);
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+            "110",
+            "120"})
+    void shouldThrowSoldeInsuffisantExceptionIfAmountIsHigherThantBalanceForTransfer(BigDecimal amount) {
+        CompteBancaire compteBancaire = new CompteBancaire(
+                defaultAccountNumber, defaultBalance);
+        CompteBancaire compteBancaireDestination = new CompteBancaire(
+                defaultAccountNumber, defaultBalance);
+        assertThrows(SoldeInsuffisantException.class, () -> {
+            compteBancaire.transferer(compteBancaireDestination, amount);
+        });
+        assertEquals(defaultBalance, compteBancaire.getSolde());
+        assertEquals(defaultBalance, compteBancaireDestination.getSolde());
     }
 }
