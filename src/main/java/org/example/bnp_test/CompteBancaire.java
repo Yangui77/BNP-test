@@ -44,7 +44,9 @@ public class CompteBancaire {
     }
 
     public void retrait(BigDecimal montant) {
-        solde = ;
+        checkValeurDecimal(montant);
+        checkMontantPositif(montant);
+        solde = solde.subtract(montant);
     }
 
 

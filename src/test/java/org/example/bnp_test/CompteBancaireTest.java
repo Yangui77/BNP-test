@@ -105,6 +105,7 @@ public class CompteBancaireTest {
         IllegalArgumentException exception = assertThrows(
                 IllegalArgumentException.class, () -> compteBancaire.depot(amount));
         assertEquals(NegativeAmountErrorMessage, exception.getMessage());
+        assertEquals(defaultBalance, compteBancaire.getSolde());
     }
 
     @ParameterizedTest
@@ -118,5 +119,18 @@ public class CompteBancaireTest {
         assertEquals(expected, compteBancaire.getSolde());
     }
 
+    @ParameterizedTest
+    @CsvSource({
+            "-100",
+            "-200"})
+    void shouldThrowIllegalArugmentExceptionWithNegativeAmount(BigDecimal amount) {
+        CompteBancaire compteBancaire = new CompteBancaire(
+                defaultAccountNumber, defaultBalance);
+        IllegalArgumentException illegalArgumentException = assertThrows(IllegalArgumentException.class, () -> {
+            compteBancaire.retrait(amount);
+        });
+        assertEquals(illegalArgumentException.getMessage(), NegativeAmountErrorMessage);
+        assertEquals(defaultBalance, compteBancaire.getSolde());
+    }
 
 }
